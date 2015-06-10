@@ -1,0 +1,15 @@
+\Fotos\ene\001.jpg 3944
+\Fotos\ene\002.jpg 2016
+\Fotos\ene\003.jpg 1034
+\Fotos\feb\001.jpg 865
+\Fotos\feb\002.jpg 4021
+\Fotos\feb\003.jpg 5300
+\Fotos\CV.png 3200
+\Tesis\EstArte\paper1.pdf 20532
+\Tesis\EstArte\paper4.pdf 23290
+\Tesis\EstArte\paper22.pdf 94321
+\Tesis\Examen\informe.doc 23224
+\Tesis\Examen\present.ppt 20321
+\Tesis\Codigo\clasif.c 1290
+\Cursos\AyED\2013\Sem1 0
+\Cursos\AyED\2013\Sem2 0

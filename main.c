@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 struct tree_el {
     int val;
+    int peso;
+    char *ruta;
     struct tree_el *sibling, *child;
 };
 typedef struct tree_el node;
@@ -24,7 +27,10 @@ void insert(node **tree, node *item)
 void print_node_info (node *tree)
 {
     if (tree->child && tree->sibling)
+    {
         printf("%d, padre de %d, y hermano de %d \n", tree->val, (tree->child)->val, (tree->sibling)->val);
+        printf("%s %d", tree->ruta, tree->peso);
+    }
     else if (tree->child)
             printf("%d, padre de %d \n", tree->val, (tree->child)->val);
     else if (tree->sibling)
@@ -62,13 +68,76 @@ void delete_tree (node *tree)
     }
 }
 
+char* substr(char* cadena, int comienzo, int longitud)
+{
+    if (longitud == 0) longitud = strlen(cadena)-comienzo-1;
+    char *nuevo = (char*)malloc(sizeof(char) * longitud);
+    strncpy(nuevo, cadena + comienzo, longitud);
+    return nuevo;
+}
+
 int main()
 {
     node *curr, *root;
-    int i, num_of_nodes, *node_values, temp, choice, exit=1, order_choice, print_choice;
+    int i, j, num_of_nodes, *node_values, temp, choice, exit=1, order_choice, print_choice;
+    /********************/
+    int peso = 0, _peso = 0;
+    char chara[150];
+    char ext[2];
+    char *ruta;
+    strcpy(chara, "");
+    strcpy(ext, "");
+    /********************/
     root = NULL;
+    FILE *ptr_file;
+    ptr_file = fopen("raiz.txt", "r");
 
-    while (exit)
+
+  //  printf("%s\n", fgets(chara, 150, ptr_file));
+
+
+    while (fgets(chara, 150, ptr_file) != NULL)
+    {
+
+        //printf("%c  =>", chara[1]);
+        //printf ("%d\n", strlen(chara));
+
+        for (i = 0; i < strlen(chara); i++) //Obtiene el tamaño del archivo por separado
+        {
+            //printf("%c", chara[i]);
+            if (chara[i] == ' ')
+            {
+                //printf("aqui hay un espacio, en %d\n", i);
+                for (j = i+1; j < strlen(chara); j++)
+                {
+                    //printf("%c", chara[j]);
+                    _peso = (chara[j] - '0');
+                    //printf("%d", _peso);
+                    if (_peso >= 0)
+                        peso = peso*10 + _peso;
+                }
+                //printf("%d\n", peso);
+
+                ruta = substr(chara, 0, i);
+
+                curr = (node *)malloc(sizeof(node));
+                curr->child = curr->sibling = NULL;
+                curr->val = (int)(chara[1]);
+                curr->peso = peso;
+                curr->ruta = ruta;
+                insert(&root, curr);
+                //printf("%d <=> ", (int)(chara[1]));
+                //printf("%s ", ruta);
+                //printf("%d\n", peso);
+            }
+        }
+
+
+        peso = 0;
+    }
+    print_node_info(root);
+
+/*    while (exit)
     {
         print_choice=order_choice=choice=num_of_nodes=temp=0;
 
@@ -131,7 +200,7 @@ int main()
                     exit = 0;
         }
     }
-
+    */
 
     return 0;
 }

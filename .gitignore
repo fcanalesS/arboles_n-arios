@@ -34,6 +34,7 @@
 #Etc
 *.depend
 *.cbp
+*.layout
 
 #Folders
 /bin
