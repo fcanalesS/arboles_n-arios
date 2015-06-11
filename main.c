@@ -73,7 +73,14 @@ char* substr(char* cadena, int comienzo, int longitud)
     if (longitud == 0) longitud = strlen(cadena)-comienzo-1;
     char *nuevo = (char*)malloc(sizeof(char) * longitud);
     strncpy(nuevo, cadena + comienzo, longitud);
+
     return nuevo;
+}
+
+void comando_L1(node *root)
+{
+    printf("Aqui se imprime todo ;D, Falta orden alfabético aquí y no se porque\nno imprime un registro (￣ー￣； ﾋﾔﾘ \n");
+    in_order_print(root);
 }
 
 int main()
@@ -81,20 +88,14 @@ int main()
     node *curr, *root;
     int i, j, num_of_nodes, *node_values, temp, choice, exit=1, order_choice, print_choice;
     /********************/
-    int peso = 0, _peso = 0, c=0;
-    char chara[150];
-    char ext[2];
-    char *ruta, *size;
+    int c=0;
+    char chara[150], op[50];
+    char *ruta, *size, *p1, *p2, *pch;
     strcpy(chara, "");
-    strcpy(ext, "");
     /********************/
     root = NULL;
     FILE *ptr_file;
     ptr_file = fopen("raiz.txt", "r");
-
-
-  //  printf("%s\n", fgets(chara, 150, ptr_file));
-
 
     while (fgets(chara, 150, ptr_file) != NULL)
     {
@@ -130,8 +131,31 @@ int main()
 
     }
     //print_node_info(root);
-    in_order_print(root);
+    //in_order_print(root);
 
+    while(exit)
+    {
+        printf("[mcanales@root]$ ");
+        fgets(op, 81, stdin);
+
+        for (i=0; i< strlen(op); i++)
+        {
+            if (op[i] == '\n')
+                op[i] = '\0';
+        }
+
+        if (strchr(op, ' ') == NULL)
+        {
+            if (strcmp("L", op) == 0)
+                comando_L1(root);
+        }
+        else
+            printf("Aqui van los comandos con argumentos");
+
+        //printf("%s", op);
+
+        exit = 0; //Dejar así para las pruebas =D
+    }
 
     return 0;
 }
