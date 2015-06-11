@@ -29,7 +29,7 @@ void print_node_info (node *tree)
     if (tree->child && tree->sibling)
     {
         //printf("%d, padre de %d, y hermano de %d \n", tree->val, (tree->child)->val, (tree->sibling)->val);
-        printf("%s %s\n", tree->ruta, tree->peso);
+        //printf("%s %s\n", tree->ruta, tree->peso);
     }
     else if (tree->child)
             printf("%s %s\n", (tree->child)->ruta, (tree->child)->peso);
@@ -38,6 +38,25 @@ void print_node_info (node *tree)
     else
         printf("%s %s\n", tree->ruta, tree->peso);
 }
+
+/*** Busquedas exclusivas para cada raiz ***/
+void print_rutas (node *tree, char *p2)
+{
+    if (tree->child && tree->sibling)
+    {
+        //printf("%d, padre de %d, y hermano de %d \n", tree->val, (tree->child)->val, (tree->sibling)->val);
+        //printf("%s\n", tree->ruta);
+    }
+    else if (tree->child)
+            printf("%s\n", (tree->child)->ruta);
+    else if (tree->sibling)
+            printf("%s\n", (tree->sibling)->ruta);
+    else
+        printf("%s\n", tree->ruta);
+}
+
+
+/*** ********* ********** **** **** **** ***/
 
 void in_order_print(node * tree)
 {
@@ -77,11 +96,44 @@ char* substr(char* cadena, int comienzo, int longitud)
     return nuevo;
 }
 
+/*** Comandos pedidos ***/
 void comando_L1(node *root)
 {
     printf("Aqui se imprime todo ;D, Falta orden alfabético aquí y no se porque\nno imprime un registro (￣ー￣； ﾋﾔﾘ \n");
     in_order_print(root);
 }
+
+void comando_L2(char *p1,char *p2, node *root)
+{
+    printf("%s %s", p1, p2);
+}
+
+void comando_T(node *root)
+{
+    printf("Comando de los tamaños de los archivos");
+}
+
+void comando_T2(char *p1,char *p2, node *root)
+{
+    printf("%s %s", p1, p2);
+}
+
+void comando_R(char *p1,char *p2, node *root)
+{
+    printf("%s %s", p1, p2);
+}
+
+void comando_E(char *p1,char *p2, node *root)
+{
+    printf("%s %s", p1, p2);
+}
+
+void comando_I(char *p1,char *p2, node *root)
+{
+    printf("%s %s", p1, p2);
+}
+/*** ******** ******* ***/
+
 
 int main()
 {
@@ -148,13 +200,41 @@ int main()
         {
             if (strcmp("L", op) == 0)
                 comando_L1(root);
+            else if (strcmp("T", op) == 0)
+                    comando_T(root);
+            else if (strcmp("F", op) == 0 || strcmp("f", op) == 0)  { delete_tree(root); exit = 0; }
         }
         else
-            printf("Aqui van los comandos con argumentos");
+        {
+            printf("Aqui van los comandos con argumentos\n");
+            for (i=0; i< strlen(op); i++)
+            {
+                if (op[i] == ' ')
+                {
+                    p1 = substr(op, 0, i);
+                    p2 = substr(op, i+1, strlen(op));
+                }
+            }
+
+            if (strcmp("L", p1) == 0 && strlen(p2) > 0)
+                comando_L2(p1, p2, root);
+            else if (strcmp("T", p1) == 0 && strlen(p2) > 0)
+                    comando_T2(p1, p2, root);
+            else if (strcmp("R", p1) == 0 && strlen(p2) > 0)
+                    comando_R(p1, p2, root);
+            else if (strcmp("E", p1) == 0 && strlen(p2) > 0)
+                    comando_E(p1, p2, root);
+            else if (strcmp("I", p1) == 0 && strlen(p2) > 0)
+                    comando_I(p1, p2, root);
+
+
+        }
+        //printf("%s//", p1);
+        //printf("%s", p1);
 
         //printf("%s", op);
 
-        exit = 0; //Dejar así para las pruebas =D
+        //exit = 0; //Dejar así para las pruebas =D
     }
 
     return 0;
