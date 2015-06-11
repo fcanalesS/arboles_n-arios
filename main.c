@@ -4,8 +4,8 @@
 
 struct tree_el {
     int val;
-    int peso;
     char *ruta;
+    char *peso;
     struct tree_el *sibling, *child;
 };
 typedef struct tree_el node;
@@ -28,15 +28,15 @@ void print_node_info (node *tree)
 {
     if (tree->child && tree->sibling)
     {
-        printf("%d, padre de %d, y hermano de %d \n", tree->val, (tree->child)->val, (tree->sibling)->val);
-        printf("%s %d", tree->ruta, tree->peso);
+        //printf("%d, padre de %d, y hermano de %d \n", tree->val, (tree->child)->val, (tree->sibling)->val);
+        printf("%s %s\n", tree->ruta, tree->peso);
     }
     else if (tree->child)
-            printf("%d, padre de %d \n", tree->val, (tree->child)->val);
+            printf("%s %s\n", (tree->child)->ruta, (tree->child)->peso);
     else if (tree->sibling)
-            printf("%d, hermano de %d \n", tree->val, (tree->sibling)->val);
+            printf("%s %s\n", (tree->sibling)->ruta, (tree->sibling)->peso);
     else
-        printf("%d \n", tree->val);
+        printf("%s %s\n", tree->ruta, tree->peso);
 }
 
 void in_order_print(node * tree)
@@ -81,10 +81,10 @@ int main()
     node *curr, *root;
     int i, j, num_of_nodes, *node_values, temp, choice, exit=1, order_choice, print_choice;
     /********************/
-    int peso = 0, _peso = 0;
+    int peso = 0, _peso = 0, c=0;
     char chara[150];
     char ext[2];
-    char *ruta;
+    char *ruta, *size;
     strcpy(chara, "");
     strcpy(ext, "");
     /********************/
@@ -98,46 +98,71 @@ int main()
 
     while (fgets(chara, 150, ptr_file) != NULL)
     {
-
-        //printf("%c  =>", chara[1]);
-        //printf ("%d\n", strlen(chara));
-
         for (i = 0; i < strlen(chara); i++) //Obtiene el tamaño del archivo por separado
         {
-            //printf("%c", chara[i]);
             if (chara[i] == ' ')
             {
-                //printf("aqui hay un espacio, en %d\n", i);
-                for (j = i+1; j < strlen(chara); j++)
+                //for (j = i+1; j < strlen(chara); j++)
+                //{
+                    //_peso = (chara[j] - '0');
+                    //if (_peso >= 0)
+                    //    peso = peso*10 + _peso;
+                //}
+
+                size = substr(chara, i+1, strlen(chara));
+                for (j=0; j< strlen(chara); j++)
                 {
-                    //printf("%c", chara[j]);
-                    _peso = (chara[j] - '0');
-                    //printf("%d", _peso);
-                    if (_peso >= 0)
-                        peso = peso*10 + _peso;
+                    if (size[j] == '\n')
+                    {
+                        size[j] = '\0';
+                    }
                 }
-                //printf("%d\n", peso);
-
-                ruta = substr(chara, 0, i);
-
+                //printf("%s", size);
                 curr = (node *)malloc(sizeof(node));
                 curr->child = curr->sibling = NULL;
-                curr->val = (int)(chara[1]);
-                curr->peso = peso;
-                curr->ruta = ruta;
+                curr->ruta = substr(chara, 0, i);
+                curr->peso = size;
+                curr->val = c;
                 insert(&root, curr);
-                //printf("%d <=> ", (int)(chara[1]));
-                //printf("%s ", ruta);
-                //printf("%d\n", peso);
+                c++;
             }
         }
 
-
-        peso = 0;
     }
-    print_node_info(root);
+    //print_node_info(root);
+    in_order_print(root);
 
-/*    while (exit)
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+    while (exit)
     {
         print_choice=order_choice=choice=num_of_nodes=temp=0;
 
@@ -201,6 +226,3 @@ int main()
         }
     }
     */
-
-    return 0;
-}
