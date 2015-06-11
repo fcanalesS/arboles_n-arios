@@ -12,6 +12,12 @@ struct tree_el {
 typedef struct tree_el node;
 /*** *********** *** ***** ****** ***/
 
+/*** *********** *** ***** ****** ***/
+float size_total = 0;
+/*** *********** *** ***** ****** ***/
+
+
+
 
 void insert(node **tree, node *item)
 {
@@ -42,41 +48,73 @@ void print_node_info (node *tree)
         printf("%s %s\n", tree->ruta, tree->peso);
 }
 
-/*** Busquedas exclusivas para cada raiz ***/
-void print_node(node *tree, char *p2)
+/*** ********* ********** **** **** **** ***/
+void print_argument(node *tree, char *p2)
 {
-//    printf("asdqwerty: %s\n", aux);
-//
-//    if (tree->child && tree->sibling)
-//    {
-//        printf("%d, padre de %d, y hermano de %d \n", tree->val, (tree->child)->val, (tree->sibling)->val);
-//        printf("asd%s\n", tree->ruta);
-//    }
-//    if (tree->child)
-//    {
-//        printf("%s\n", tree->child->ruta);
-//    }
     if (tree->sibling)
     {
-        //printf("%s\n", tree->sibling->ruta);
         if (strstr(tree->sibling->ruta, p2) != NULL)
             printf("%s %s\n", tree->sibling->ruta, tree->sibling->peso);
     }
     else
     {
-        //printf("%s\n", tree->ruta);
         if (strstr(tree->ruta, p2) != NULL)
             printf("%s %s", tree->ruta, tree->peso);
     }
 }
 
-void in_order(node * tree, char * p2)
+void in_order1(node * tree, char * p2)
 {
-    if(tree->child) in_order(tree->child, p2);
-    print_node(tree, p2);
-    if(tree->sibling) in_order(tree->sibling, p2);
+    if(tree->child) in_order1(tree->child, p2);
+    print_argument(tree, p2);
+    if(tree->sibling) in_order1(tree->sibling, p2);
+}
+/*** ********* ********** **** **** **** ***/
+
+/*** ********* ********** **** **** **** ***/
+int print_size(node *tree)
+{
+    if (tree->sibling)
+    {
+        //printf("%d\n", atoi(tree->sibling->peso));
+        size_total = size_total + atoi(tree->sibling->peso);
+    }
+    else
+    {
+        //printf("%s\n", atoi(tree->peso));
+        size_total = size_total + atoi(tree->peso);
+    }
 }
 
+void in_order2(node * tree)
+{
+    if(tree->child) in_order2(tree->child);
+    print_size(tree);
+    if(tree->sibling) in_order2(tree->sibling);
+}
+/*** ********* ********** **** **** **** ***/
+
+/*** ********* ********** **** **** **** ***/
+int print_size_carpeta(node *tree)
+{
+    if (tree->sibling)
+    {
+        //printf("%d\n", atoi(tree->sibling->peso));
+        size_total = size_total + atoi(tree->sibling->peso);
+    }
+    else
+    {
+        //printf("%s\n", atoi(tree->peso));
+        size_total = size_total + atoi(tree->peso);
+    }
+}
+
+void in_order3(node * tree)
+{
+    if(tree->child) in_order2(tree->child);
+    print_size(tree);
+    if(tree->sibling) in_order2(tree->sibling);
+}
 /*** ********* ********** **** **** **** ***/
 
 
@@ -116,15 +154,14 @@ void comando_L1(node *root)
 
 void comando_L2(char *p2, node *root)
 {
-    //printf("%s\n\n",p2);
-    in_order(root, p2);
-
-
+    in_order1(root, p2);
 }
 
 void comando_T(node *root)
 {
-    printf("Comando de los tamaños de los archivos");
+    in_order2(root);
+    printf("Tamaño ocupado\n");
+    printf("Tamaño total: %f B <> %f MB <> %f GB\n", size_total, size_total/1048576, size_total/1073741824);
 }
 
 void comando_T2(char *p1,char *p2, node *root)
