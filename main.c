@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*** Declarativa del arbol n-ario ***/
 struct tree_el {
     int val;
     char *ruta;
@@ -9,6 +10,8 @@ struct tree_el {
     struct tree_el *sibling, *child;
 };
 typedef struct tree_el node;
+/*** *********** *** ***** ****** ***/
+
 
 void insert(node **tree, node *item)
 {
@@ -28,11 +31,11 @@ void print_node_info (node *tree)
 {
     if (tree->child && tree->sibling)
     {
-        //printf("%d, padre de %d, y hermano de %d \n", tree->val, (tree->child)->val, (tree->sibling)->val);
-        //printf("%s %s\n", tree->ruta, tree->peso);
+        printf("%d, padre de %d, y hermano de %d \n", tree->val, (tree->child)->val, (tree->sibling)->val);
+        printf("%s %s\n", tree->ruta, tree->peso);
     }
     else if (tree->child)
-            printf("%s %s\n", (tree->child)->ruta, (tree->child)->peso);
+            printf("%s %s\n", tree->child->ruta, (tree->child)->peso);
     else if (tree->sibling)
             printf("%s %s\n", (tree->sibling)->ruta, (tree->sibling)->peso);
     else
@@ -40,23 +43,42 @@ void print_node_info (node *tree)
 }
 
 /*** Busquedas exclusivas para cada raiz ***/
-void print_rutas (node *tree, char *p2)
+void print_node(node *tree, char *p2)
 {
-    if (tree->child && tree->sibling)
+//    printf("asdqwerty: %s\n", aux);
+//
+//    if (tree->child && tree->sibling)
+//    {
+//        printf("%d, padre de %d, y hermano de %d \n", tree->val, (tree->child)->val, (tree->sibling)->val);
+//        printf("asd%s\n", tree->ruta);
+//    }
+//    if (tree->child)
+//    {
+//        printf("%s\n", tree->child->ruta);
+//    }
+    if (tree->sibling)
     {
-        //printf("%d, padre de %d, y hermano de %d \n", tree->val, (tree->child)->val, (tree->sibling)->val);
-        //printf("%s\n", tree->ruta);
+        //printf("%s\n", tree->sibling->ruta);
+        if (strstr(tree->sibling->ruta, p2) != NULL)
+            printf("%s %s\n", tree->sibling->ruta, tree->sibling->peso);
     }
-    else if (tree->child)
-            printf("%s\n", (tree->child)->ruta);
-    else if (tree->sibling)
-            printf("%s\n", (tree->sibling)->ruta);
     else
-        printf("%s\n", tree->ruta);
+    {
+        //printf("%s\n", tree->ruta);
+        if (strstr(tree->ruta, p2) != NULL)
+            printf("%s %s", tree->ruta, tree->peso);
+    }
 }
 
+void in_order(node * tree, char * p2)
+{
+    if(tree->child) in_order(tree->child, p2);
+    print_node(tree, p2);
+    if(tree->sibling) in_order(tree->sibling, p2);
+}
 
 /*** ********* ********** **** **** **** ***/
+
 
 void in_order_print(node * tree)
 {
@@ -64,18 +86,7 @@ void in_order_print(node * tree)
     print_node_info(tree);
     if(tree->sibling) in_order_print(tree->sibling);
 }
-void pre_order_print(node * tree)
-{
-    print_node_info(tree);
-    if(tree->child) pre_order_print(tree->child);
-    if(tree->sibling) pre_order_print(tree->sibling);
-}
-void post_order_print(node * tree)
-{
-    if(tree->child) post_order_print(tree->child);
-    if(tree->sibling) post_order_print(tree->sibling);
-    print_node_info(tree);
-}
+
 
 void delete_tree (node *tree)
 {
@@ -99,13 +110,16 @@ char* substr(char* cadena, int comienzo, int longitud)
 /*** Comandos pedidos ***/
 void comando_L1(node *root)
 {
-    printf("Aqui se imprime todo ;D, Falta orden alfabético aquí y no se porque\nno imprime un registro (￣ー￣； ﾋﾔﾘ \n");
+    //printf("Aqui se imprime todo ;D, Falta orden alfabético aquí y no se porque\nno imprime un registro (￣ー￣； ﾋﾔﾘ \n");
     in_order_print(root);
 }
 
-void comando_L2(char *p1,char *p2, node *root)
+void comando_L2(char *p2, node *root)
 {
-    printf("%s %s", p1, p2);
+    //printf("%s\n\n",p2);
+    in_order(root, p2);
+
+
 }
 
 void comando_T(node *root)
@@ -206,7 +220,7 @@ int main()
         }
         else
         {
-            printf("Aqui van los comandos con argumentos\n");
+            //printf("Aqui van los comandos con argumentos\n");
             for (i=0; i< strlen(op); i++)
             {
                 if (op[i] == ' ')
@@ -216,8 +230,8 @@ int main()
                 }
             }
 
-            if (strcmp("L", p1) == 0 && strlen(p2) > 0)
-                comando_L2(p1, p2, root);
+            if (strcmp("L", p1) == 0)
+                comando_L2(p2, root);
             else if (strcmp("T", p1) == 0 && strlen(p2) > 0)
                     comando_T2(p1, p2, root);
             else if (strcmp("R", p1) == 0 && strlen(p2) > 0)
@@ -266,6 +280,22 @@ int main()
 
 
 /*
+
+
+void pre_order_print(node * tree)
+{
+    print_node_info(tree);
+    if(tree->child) pre_order_print(tree->child);
+    if(tree->sibling) pre_order_print(tree->sibling);
+}
+void post_order_print(node * tree)
+{
+    if(tree->child) post_order_print(tree->child);
+    if(tree->sibling) post_order_print(tree->sibling);
+    print_node_info(tree);
+}
+
+
     while (exit)
     {
         print_choice=order_choice=choice=num_of_nodes=temp=0;
