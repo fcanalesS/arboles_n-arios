@@ -7,6 +7,7 @@ struct tree_el {
     int val;
     char *ruta;
     char *peso;
+    char *path;
     struct tree_el *sibling, *child;
 };
 typedef struct tree_el node;
@@ -14,6 +15,7 @@ typedef struct tree_el node;
 
 /*** *********** *** ***** ****** ***/
 float size_total = 0;
+float size_folder = 0;
 /*** *********** *** ***** ****** ***/
 
 
@@ -72,16 +74,14 @@ void in_order1(node * tree, char * p2)
 /*** ********* ********** **** **** **** ***/
 
 /*** ********* ********** **** **** **** ***/
-int print_size(node *tree)
+void print_size(node *tree)
 {
     if (tree->sibling)
     {
-        //printf("%d\n", atoi(tree->sibling->peso));
         size_total = size_total + atoi(tree->sibling->peso);
     }
     else
     {
-        //printf("%s\n", atoi(tree->peso));
         size_total = size_total + atoi(tree->peso);
     }
 }
@@ -95,26 +95,67 @@ void in_order2(node * tree)
 /*** ********* ********** **** **** **** ***/
 
 /*** ********* ********** **** **** **** ***/
-int print_size_carpeta(node *tree)
+void print_size_carpeta(node *tree, char *p2)
 {
     if (tree->sibling)
     {
         //printf("%d\n", atoi(tree->sibling->peso));
-        size_total = size_total + atoi(tree->sibling->peso);
+        if (strchr(p2, '.') == NULL)
+        {
+            if (strstr(tree->sibling->ruta, p2) != NULL)
+                //printf("%s %s\n", tree->sibling->ruta, tree->sibling->peso);
+                size_folder = size_folder + atoi(tree->sibling->peso);
+        }
     }
     else
     {
         //printf("%s\n", atoi(tree->peso));
-        size_total = size_total + atoi(tree->peso);
+        if (strchr(p2, '.') == NULL)
+        {
+            if (strstr(tree->ruta, p2) != NULL)
+                //printf("%s %s\n", tree->ruta, tree->peso);
+                size_folder = size_folder + atoi(tree->peso);
+        }
     }
 }
 
-void in_order3(node * tree)
+void in_order3(node * tree, char * p2)
 {
-    if(tree->child) in_order2(tree->child);
-    print_size(tree);
-    if(tree->sibling) in_order2(tree->sibling);
+    if(tree->child) in_order3(tree->child, p2);
+    print_size_carpeta(tree, p2);
+    if(tree->sibling) in_order3(tree->sibling, p2);
 }
+/*** ********* ********** **** **** **** ***/
+void print_archivo(node *tree, char *p2)
+{
+    if (tree->sibling)
+    {
+        //printf("%d\n", atoi(tree->sibling->peso));
+        if (strchr(p2, '.') != NULL)
+        {
+            if (strstr(tree->sibling->ruta, p2) != NULL)
+                printf("%s\n", tree->sibling->path);
+        }
+    }
+    else
+    {
+        //printf("%s\n", atoi(tree->peso));
+        if (strchr(p2, '.') != NULL)
+        {
+            if (strstr(tree->ruta, p2) != NULL)
+                printf("%s\n", tree->path);
+        }
+    }
+}
+
+void in_order4(node * tree, char *p2)
+{
+    if(tree->child) in_order4(tree->child, p2);
+    print_archivo(tree, p2);
+    if(tree->sibling) in_order4(tree->sibling, p2);
+}
+/*** ********* ********** **** **** **** ***/
+
 /*** ********* ********** **** **** **** ***/
 
 
@@ -164,14 +205,18 @@ void comando_T(node *root)
     printf("Tamaño total: %f B <> %f MB <> %f GB\n", size_total, size_total/1048576, size_total/1073741824);
 }
 
-void comando_T2(char *p1,char *p2, node *root)
+void comando_T2(char *p2, node *root)
 {
-    printf("%s %s", p1, p2);
+    //printf("%s", p2);
+    in_order3(root, p2);
+    printf("Tamaño ocupado\n");
+    printf("Tamaño total: %f B <> %f MB <> %f GB\n", size_folder, size_folder/1048576, size_folder/1073741824);
 }
 
-void comando_R(char *p1,char *p2, node *root)
+void comando_R(char *p2, node *root)
 {
-    printf("%s %s", p1, p2);
+    //printf("%s", p2);
+    in_order4(root, p2);
 }
 
 void comando_E(char *p1,char *p2, node *root)
@@ -193,7 +238,7 @@ int main()
     /********************/
     int c=0;
     char chara[150], op[50];
-    char *ruta, *size, *p1, *p2, *pch;
+    char *ruta, *size, *p1, *p2, *path, *ptr;
     strcpy(chara, "");
     /********************/
     root = NULL;
@@ -221,10 +266,20 @@ int main()
                         size[j] = '\0';
                     }
                 }
-                //printf("%s", size);
+
+                ptr = strrchr(chara, '\\');
+                if (ptr)
+                {
+                    //printf("%d\n", ptr-chara);
+                    path = substr(chara, 0, ptr-chara+1);
+
+                }
+                //printf("%s", path);
+                //printf("\n");
                 curr = (node *)malloc(sizeof(node));
                 curr->child = curr->sibling = NULL;
                 curr->ruta = substr(chara, 0, i);
+                curr->path = path;
                 curr->peso = size;
                 curr->val = c;
                 insert(&root, curr);
@@ -269,10 +324,10 @@ int main()
 
             if (strcmp("L", p1) == 0)
                 comando_L2(p2, root);
-            else if (strcmp("T", p1) == 0 && strlen(p2) > 0)
-                    comando_T2(p1, p2, root);
+            else if (strcmp("T", p1) == 0)
+                    comando_T2(p2, root);
             else if (strcmp("R", p1) == 0 && strlen(p2) > 0)
-                    comando_R(p1, p2, root);
+                    comando_R(p2, root);
             else if (strcmp("E", p1) == 0 && strlen(p2) > 0)
                     comando_E(p1, p2, root);
             else if (strcmp("I", p1) == 0 && strlen(p2) > 0)
