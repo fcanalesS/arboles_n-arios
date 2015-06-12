@@ -13,6 +13,10 @@ struct tree_el {
 typedef struct tree_el node;
 /*** *********** *** ***** ****** ***/
 
+
+
+
+
 /*** *********** *** ***** ****** ***/
 float size_total = 0;
 float size_folder = 0;
@@ -180,17 +184,24 @@ void in_order5(node * tree, char *p2)
 /*** ********* ********** **** **** **** ***/
 
 /*** ********* ********** **** **** **** ***/
-void print_delete(node *tree, char *p2)
+int print_delete(node *tree, char *p2)
 {
     if (tree->sibling)
     {
         if (strstr(tree->sibling->ruta, p2) != NULL)
+        {
             printf("%s\n", tree->sibling->ruta);
+            tree->sibling = tree->sibling->sibling;
+            free(tree->sibling);
+        }
     }
     else
     {
         if (strstr(tree->ruta, p2) != NULL)
+        {
             printf("%s\n", tree->ruta);
+            tree->child = tree->child->child;
+        }
     }
 }
 
@@ -262,9 +273,10 @@ void comando_R(char *p2, node *root)
     in_order4(root, p2);
 }
 
-void comando_E(char *p1,char *p2, node *root)
+void comando_E(char *p2, node *root)
 {
-    printf("%s %s", p1, p2);
+    //printf("%s\n",p2);
+    in_order6(root, p2);
 }
 
 void comando_I(char *p2, node *root)
@@ -285,7 +297,7 @@ int main()
     node *curr, *root;
     int i, j, temp, exit=1, punto, espacio;
     /********************/
-    int c=0;
+    int c=1;
     char chara[150], op[50];
     char *ruta, *size, *p1, *p2, *path, *ptr, *ex, *ptr2;
     strcpy(chara, "");
@@ -380,7 +392,7 @@ int main()
             else if (strcmp("R", p1) == 0 && strlen(p2) > 0)
                     comando_R(p2, root);
             else if (strcmp("E", p1) == 0 && strlen(p2) > 0)
-                    comando_E(p1, p2, root);
+                    comando_E(p2, root);
             else if (strcmp("I", p1) == 0 && (strlen(p2) > 0) && strlen(p2) <= 3)
                     comando_I(p2, root);
 
