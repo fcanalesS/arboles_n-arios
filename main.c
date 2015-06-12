@@ -126,6 +126,8 @@ void in_order3(node * tree, char * p2)
     if(tree->sibling) in_order3(tree->sibling, p2);
 }
 /*** ********* ********** **** **** **** ***/
+
+/*** ********* ********** **** **** **** ***/
 void print_archivo(node *tree, char *p2)
 {
     if (tree->sibling)
@@ -155,7 +157,49 @@ void in_order4(node * tree, char *p2)
     if(tree->sibling) in_order4(tree->sibling, p2);
 }
 /*** ********* ********** **** **** **** ***/
+void print_extension(node *tree, char *p2)
+{
+    if (tree->sibling)
+    {
+        if (strstr(tree->sibling->ruta, p2) != NULL)
+            printf("%s\n", tree->sibling->ruta);
+    }
+    else
+    {
+        if (strstr(tree->ruta, p2) != NULL)
+            printf("%s\n", tree->ruta);
+    }
+}
 
+void in_order5(node * tree, char *p2)
+{
+    if(tree->child) in_order5(tree->child, p2);
+    print_extension(tree, p2);
+    if(tree->sibling) in_order5(tree->sibling, p2);
+}
+/*** ********* ********** **** **** **** ***/
+
+/*** ********* ********** **** **** **** ***/
+void print_delete(node *tree, char *p2)
+{
+    if (tree->sibling)
+    {
+        if (strstr(tree->sibling->ruta, p2) != NULL)
+            printf("%s\n", tree->sibling->ruta);
+    }
+    else
+    {
+        if (strstr(tree->ruta, p2) != NULL)
+            printf("%s\n", tree->ruta);
+    }
+}
+
+void in_order6(node * tree, char *p2)
+{
+    if(tree->child) in_order6(tree->child, p2);
+    print_delete(tree, p2);
+    if(tree->sibling) in_order6(tree->sibling, p2);
+}
 /*** ********* ********** **** **** **** ***/
 
 
@@ -215,7 +259,6 @@ void comando_T2(char *p2, node *root)
 
 void comando_R(char *p2, node *root)
 {
-    //printf("%s", p2);
     in_order4(root, p2);
 }
 
@@ -224,9 +267,15 @@ void comando_E(char *p1,char *p2, node *root)
     printf("%s %s", p1, p2);
 }
 
-void comando_I(char *p1,char *p2, node *root)
+void comando_I(char *p2, node *root)
 {
-    printf("%s %s", p1, p2);
+    char *p = ".", *aux = malloc(sizeof(p2) +1);
+    strcat(aux, p);
+    strcat(aux, p2);
+    //printf("%s", aux);
+    in_order5(root, aux);
+
+
 }
 /*** ******** ******* ***/
 
@@ -234,11 +283,11 @@ void comando_I(char *p1,char *p2, node *root)
 int main()
 {
     node *curr, *root;
-    int i, j, num_of_nodes, *node_values, temp, choice, exit=1, order_choice, print_choice;
+    int i, j, temp, exit=1, punto, espacio;
     /********************/
     int c=0;
     char chara[150], op[50];
-    char *ruta, *size, *p1, *p2, *path, *ptr;
+    char *ruta, *size, *p1, *p2, *path, *ptr, *ex, *ptr2;
     strcpy(chara, "");
     /********************/
     root = NULL;
@@ -257,7 +306,6 @@ int main()
                     //if (_peso >= 0)
                     //    peso = peso*10 + _peso;
                 //}
-
                 size = substr(chara, i+1, strlen(chara));
                 for (j=0; j< strlen(chara); j++)
                 {
@@ -274,7 +322,10 @@ int main()
                     path = substr(chara, 0, ptr-chara+1);
 
                 }
-                //printf("%s", path);
+
+                //printf("%d\n", i);
+                //printf("%s", ex);
+
                 //printf("\n");
                 curr = (node *)malloc(sizeof(node));
                 curr->child = curr->sibling = NULL;
@@ -293,7 +344,7 @@ int main()
 
     while(exit)
     {
-        printf("[mcanales@root]$ ");
+        printf("[mcanales@Console-command]$ ");
         fgets(op, 81, stdin);
 
         for (i=0; i< strlen(op); i++)
@@ -330,8 +381,8 @@ int main()
                     comando_R(p2, root);
             else if (strcmp("E", p1) == 0 && strlen(p2) > 0)
                     comando_E(p1, p2, root);
-            else if (strcmp("I", p1) == 0 && strlen(p2) > 0)
-                    comando_I(p1, p2, root);
+            else if (strcmp("I", p1) == 0 && (strlen(p2) > 0) && strlen(p2) <= 3)
+                    comando_I(p2, root);
 
 
         }
