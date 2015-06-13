@@ -13,18 +13,12 @@ struct tree_el {
 typedef struct tree_el node;
 /*** *********** *** ***** ****** ***/
 
-
-
-
-
-/*** *********** *** ***** ****** ***/
+/*** Variables globales para calcular el tamaño de los directorios y total ***/
 float size_total = 0;
 float size_folder = 0;
-/*** *********** *** ***** ****** ***/
+/*** ********************************************************************* ***/
 
-
-
-
+/*** Funciones propias del Árbol N-Ario ***/
 void insert(node **tree, node *item)
 {
     if (!(*tree))
@@ -65,7 +59,7 @@ void print_argument(node *tree, char *p2)
     else
     {
         if (strstr(tree->ruta, p2) != NULL)
-            printf("%s %s", tree->ruta, tree->peso);
+            printf("%s %s\n", tree->ruta, tree->peso);
     }
 }
 
@@ -103,21 +97,17 @@ void print_size_carpeta(node *tree, char *p2)
 {
     if (tree->sibling)
     {
-        //printf("%d\n", atoi(tree->sibling->peso));
         if (strchr(p2, '.') == NULL)
         {
             if (strstr(tree->sibling->ruta, p2) != NULL)
-                //printf("%s %s\n", tree->sibling->ruta, tree->sibling->peso);
                 size_folder = size_folder + atoi(tree->sibling->peso);
         }
     }
     else
     {
-        //printf("%s\n", atoi(tree->peso));
         if (strchr(p2, '.') == NULL)
         {
             if (strstr(tree->ruta, p2) != NULL)
-                //printf("%s %s\n", tree->ruta, tree->peso);
                 size_folder = size_folder + atoi(tree->peso);
         }
     }
@@ -136,7 +126,6 @@ void print_archivo(node *tree, char *p2)
 {
     if (tree->sibling)
     {
-        //printf("%d\n", atoi(tree->sibling->peso));
         if (strchr(p2, '.') != NULL)
         {
             if (strstr(tree->sibling->ruta, p2) != NULL)
@@ -145,7 +134,6 @@ void print_archivo(node *tree, char *p2)
     }
     else
     {
-        //printf("%s\n", atoi(tree->peso));
         if (strchr(p2, '.') != NULL)
         {
             if (strstr(tree->ruta, p2) != NULL)
@@ -244,7 +232,6 @@ char* substr(char* cadena, int comienzo, int longitud)
 /*** Comandos pedidos ***/
 void comando_L1(node *root)
 {
-    //printf("Aqui se imprime todo ;D, Falta orden alfabético aquí y no se porque\nno imprime un registro (￣ー￣； ﾋﾔﾘ \n");
     in_order_print(root);
 }
 
@@ -256,16 +243,17 @@ void comando_L2(char *p2, node *root)
 void comando_T(node *root)
 {
     in_order2(root);
-    printf("Tamaño ocupado\n");
-    printf("Tamaño total: %f B <> %f MB <> %f GB\n", size_total, size_total/1048576, size_total/1073741824);
+    printf("Tama\xA4o ocupado\n");
+    printf("Tama\xA4o total: %f B <> %f MB <> %f GB\n", size_total, size_total/1048576, size_total/1073741824);
+    size_total = 0;
 }
 
 void comando_T2(char *p2, node *root)
 {
-    //printf("%s", p2);
     in_order3(root, p2);
-    printf("Tamaño ocupado\n");
-    printf("Tamaño total: %f B <> %f MB <> %f GB\n", size_folder, size_folder/1048576, size_folder/1073741824);
+    printf("Tama\xA4o ocupado\n");
+    printf("Tama\xA4o total: %f B <> %f MB <> %f GB\n", size_folder, size_folder/1048576, size_folder/1073741824);
+    size_folder = 0;
 }
 
 void comando_R(char *p2, node *root)
@@ -275,19 +263,35 @@ void comando_R(char *p2, node *root)
 
 void comando_E(char *p2, node *root)
 {
-    //printf("%s\n",p2);
-    in_order6(root, p2);
+    printf("--->Comando no implementado<---\n");
 }
 
 void comando_I(char *p2, node *root)
 {
-    char *p = ".", *aux = malloc(sizeof(p2) +1);
-    strcat(aux, p);
-    strcat(aux, p2);
-    //printf("%s", aux);
+    char *aux;
+    if (strlen(p2) == 1)
+    {
+        aux = (char *)malloc(3);
+        aux[0] = '.';
+        strcat(aux, p2);
+        aux[3] = '\0';
+    }
+    else if (strlen(p2) == 2)
+    {
+        aux = (char *)malloc(4);
+        aux[0] = '.';
+        strcat(aux, p2);
+        aux[4] = '\0';
+    }
+    else if (strlen(p2) == 3)
+    {
+        aux = (char *)malloc(5);
+        aux[0] = '.';
+        strcat(aux, p2);
+        aux[5] = '\0';
+    }
+
     in_order5(root, aux);
-
-
 }
 /*** ******** ******* ***/
 
@@ -308,16 +312,10 @@ int main()
 
     while (fgets(chara, 150, ptr_file) != NULL)
     {
-        for (i = 0; i < strlen(chara); i++) //Obtiene el tamaño del archivo por separado
+        for (i = 0; i < strlen(chara); i++)
         {
             if (chara[i] == ' ')
             {
-                //for (j = i+1; j < strlen(chara); j++)
-                //{
-                    //_peso = (chara[j] - '0');
-                    //if (_peso >= 0)
-                    //    peso = peso*10 + _peso;
-                //}
                 size = substr(chara, i+1, strlen(chara));
                 for (j=0; j< strlen(chara); j++)
                 {
@@ -332,16 +330,14 @@ int main()
                 {
                     //printf("%d\n", ptr-chara);
                     path = substr(chara, 0, ptr-chara+1);
+                    path[ptr-chara+1] = '\0';
 
                 }
-
-                //printf("%d\n", i);
-                //printf("%s", ex);
-
-                //printf("\n");
                 curr = (node *)malloc(sizeof(node));
                 curr->child = curr->sibling = NULL;
-                curr->ruta = substr(chara, 0, i);
+                ruta = substr(chara, 0, i+1);
+                ruta[i+1] = '\0';
+                curr->ruta = ruta;
                 curr->path = path;
                 curr->peso = size;
                 curr->val = c;
@@ -351,13 +347,12 @@ int main()
         }
 
     }
-    //print_node_info(root);
-    //in_order_print(root);
 
     while(exit)
     {
-        printf("[mcanales@Console-command]$ ");
-        fgets(op, 81, stdin);
+        printf("[mcanales_usach@Console_command]$ ");
+        fgets(op, 50, stdin);
+        fflush(stdin);
 
         for (i=0; i< strlen(op); i++)
         {
@@ -367,15 +362,25 @@ int main()
 
         if (strchr(op, ' ') == NULL)
         {
-            if (strcmp("L", op) == 0)
+            if (strcmp("L", op) == 0 || strcmp("l", op) == 0)
                 comando_L1(root);
-            else if (strcmp("T", op) == 0)
+            else if (strcmp("T", op) == 0 || strcmp("t", op) == 0)
                     comando_T(root);
-            else if (strcmp("F", op) == 0 || strcmp("f", op) == 0)  { delete_tree(root); exit = 0; }
+            else if (strcmp("F", op) == 0 || strcmp("f", op) == 0)
+                {
+                    system("cls");
+                    printf("\n\n\n\n\n\n\n\n\n\t\tAutor: Matias Javier Canales Saavedra\n\n\n\n\n\n\n\n\n");
+                    delete_tree(root); // Elimina el árbol
+                    system("pause"); // Si se revisa en Linux, cambiar por system("sleep 15");
+                    exit = 0;
+                }
+            else if (strcmp("clear", op) == 0 || strcmp("CLEAR", op) == 0)
+                system("cls"); // Si se revisa en Linux cmabiar por system("clear");
+            else
+                printf("Comando desconocido\n");
         }
         else
         {
-            //printf("Aqui van los comandos con argumentos\n");
             for (i=0; i< strlen(op); i++)
             {
                 if (op[i] == ' ')
@@ -395,123 +400,10 @@ int main()
                     comando_E(p2, root);
             else if (strcmp("I", p1) == 0 && (strlen(p2) > 0) && strlen(p2) <= 3)
                     comando_I(p2, root);
-
-
+            else
+                printf("Comando desconocido\n");
         }
-        //printf("%s//", p1);
-        //printf("%s", p1);
-
-        //printf("%s", op);
-
-        //exit = 0; //Dejar así para las pruebas =D
     }
 
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-
-void pre_order_print(node * tree)
-{
-    print_node_info(tree);
-    if(tree->child) pre_order_print(tree->child);
-    if(tree->sibling) pre_order_print(tree->sibling);
-}
-void post_order_print(node * tree)
-{
-    if(tree->child) post_order_print(tree->child);
-    if(tree->sibling) post_order_print(tree->sibling);
-    print_node_info(tree);
-}
-
-
-    while (exit)
-    {
-        print_choice=order_choice=choice=num_of_nodes=temp=0;
-
-        printf ("1.- Crear nuevo arbol\n");
-        printf ("2.- Imprime arbol\n");
-        scanf("%d", &choice);
-        switch(choice)
-        {
-            case 1:
-                    if (root)   delete_tree(root);
-                    root = NULL;
-                    //Calcular numero nodos mediante archivo
-                    num_of_nodes = 5;
-                    node_values = calloc(num_of_nodes, sizeof(int));
-                    for (i=1; i<=num_of_nodes; i++)
-                    {
-                        printf ("Valor de un nodo?: "); scanf ("%d", &node_values[i-1]);
-                        if (node_values[0] < node_values[i-1])
-                        {
-                            temp = node_values[i-1];
-                            node_values[i-1] = node_values[0];
-                            node_values[0] = temp;
-                        }
-                    }
-
-                    for(i=1; i<=num_of_nodes; i++) //Creando arbol n-ary segun data ingresada
-                    {
-                        curr = (node *)malloc(sizeof(node));
-                        curr->child = curr->sibling = NULL;
-                        curr->val = node_values[i-1];
-                        insert(&root, curr);
-                    }
-
-                    //print_node_info(root);
-                    break;
-            case 2:
-                    if(root != NULL)
-                    {
-                        printf ("Seleccione el orden\n");
-                        printf("1.In-order\n");
-                        printf("2.pre-order\n");
-                        printf("3.post-order\n");
-                        scanf("%d",&order_choice);
-
-                        switch(order_choice)
-                        {
-                            case 1:
-                                    in_order_print(root);   break;
-                            case 2:
-                                    pre_order_print(root);  break;
-                            case 3:
-                                    post_order_print(root); break;
-                        }
-
-                    }
-                    else
-                        printf("\nEl arbol no existe ! ! !\n");
-            case 3:
-                    delete_tree(root);
-                    exit = 0;
-        }
-    }
-    */
